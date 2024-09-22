@@ -11,7 +11,7 @@ if ('serviceWorker' in navigator) {
     // It won't be able to control pages unless it's located at the same level or higher than them.
     // *Don't* register service worker file in, e.g., a scripts/ sub-directory!
     // See https://github.com/slightlyoff/ServiceWorker/issues/468
-    navigator.serviceWorker.register('/sw.js').then(function(reg) {
+    navigator.serviceWorker.register('./sw.js').then(function(reg) {
       // updatefound is fired if service-worker.js changes.
       reg.onupdatefound = function() {
         // The updatefound event implies that reg.installing is set; see
@@ -149,8 +149,8 @@ function goto_home() {
     hide_menu();
     if (myInterval > 0)
         clearInterval(myInterval);
-    if(! document.getElementById('thescreen').contentWindow.location.href.endsWith('/screens/home.html')) {
-        document.getElementById('thescreen').contentWindow.location.replace('/screens/home.html');
+    if(! document.getElementById('thescreen').contentWindow.location.href.endsWith('./screens/home.html')) {
+        document.getElementById('thescreen').contentWindow.location.replace('./screens/home.html');
         document.getElementById('thescreen').onload = function (e) { init_home(); }
     } else {
         if (document.getElementById('thescreen').contentWindow.document.readyState == 'complete')
@@ -163,7 +163,7 @@ function goto_home() {
 function goto_help() {
     hide_menu();
     document.getElementById('#play').style.display = 'none';
-    document.getElementById('thescreen').contentWindow.location.replace('/screens/help.html');
+    document.getElementById('thescreen').contentWindow.location.replace('./screens/help.html');
     document.getElementById('thescreen').onload = function (e) {
         replaceEventListener(get_screen().getElementById("#back"), clickEvnt, function(e) { window.history.back(); });
     }
@@ -173,13 +173,12 @@ function goto_game(callback) {
     hide_menu();
     window.addEventListener("keypress", gameKeypress);
     document.getElementById('#play').style.display = 'none';
-    document.getElementById('thescreen').contentWindow.location.replace('/screens/game.html');
+    document.getElementById('thescreen').contentWindow.location.replace('./screens/game.html');
     document.getElementById('thescreen').onload = function (e) {
         get_screen().getElementById("title").textContent = `N = ${N}`;
         replaceEventListener(get_screen().getElementById("vis_button"), clickEvnt, function(e) {  vis_click();});
         replaceEventListener(get_screen().getElementById("letter_button"), clickEvnt, function(e) { letter_click();});
         replaceEventListener(get_screen().getElementById("#back"), clickEvnt, function(e) {
-            _paq.push(['trackEvent', 'Game', 'Exit', N]);
             window.history.back();
         });
 
@@ -190,7 +189,7 @@ function goto_game(callback) {
 function goto_score() {
     hide_menu();
     document.getElementById('#play').style.display = 'none';
-    document.getElementById('thescreen').contentWindow.location.replace('/screens/score.html');
+    document.getElementById('thescreen').contentWindow.location.replace('./screens/score.html');
     document.getElementById('thescreen').onload = function (e) {
         replaceEventListener(get_screen().getElementById("#back"), clickEvnt, function(e) {  window.history.back(); });
         replaceEventListener(get_screen().getElementById("#play"), clickEvnt, function(e) {  start_game(true); });
@@ -227,14 +226,14 @@ function goto_score() {
 function goto_stats() {
     hide_menu();
     document.getElementById('#play').style.display = 'none';
-    document.getElementById('thescreen').contentWindow.location.replace('/screens/stats.html');
+    document.getElementById('thescreen').contentWindow.location.replace('./screens/stats.html');
     document.getElementById('thescreen').onload = function (e) {
         replaceEventListener(get_screen().getElementById("#back"), clickEvnt, function(e) { window.history.back(); });
     }
 }
 
 function goto_config() {
-    document.getElementById('themenu').contentWindow.location.replace('/screens/config.html');
+    document.getElementById('themenu').contentWindow.location.replace('./screens/config.html');
     document.getElementById('themenu').onload = function (e) {
         replaceEventListener(get_menu().getElementById("#download_stats"), clickEvnt,   download_stats);
         replaceEventListener(get_menu().getElementById("#level_down"), clickEvnt,       level_down);
@@ -274,12 +273,10 @@ function set_n(new_level) {
 
 function level_down() {
     set_n(N - 1);
-    _paq.push(['trackEvent', 'Config', 'LevelDown', N]);
 }
 
 function level_up() {
     set_n(N + 1);
-    _paq.push(['trackEvent', 'Config', 'LevelUp', N]);
 }
 
 function go_back() {
@@ -415,13 +412,10 @@ function calc_score() {
     d_prime = hit_rate - false_alarm_rate;
 
     if (d_prime > 0.85) {
-        _paq.push(['trackEvent', 'Game', 'Win', N]);
         return 1;
     } else if (d_prime < 0.7) {
-        _paq.push(['trackEvent', 'Game', 'Lose', N]);
         return -1;
     } else {
-        _paq.push(['trackEvent', 'Game', 'Nochange', N]);
         return 0;
     }
 }
@@ -520,8 +514,8 @@ function build_stacks() {
 
 function load_snds() {
     if (snds.length == 0) {
-        let clips = ['/audio/B', '/audio/C', '/audio/D', '/audio/G', '/audio/H',
-            '/audio/K', '/audio/P', '/audio/Q', '/audio/T', '/audio/W'];
+        let clips = ['./audio/B', './audio/C', './audio/D', './audio/G', './audio/H',
+            './audio/K', './audio/P', './audio/Q', './audio/T', './audio/W'];
 
         if (document.createElement('audio').canPlayType('audio/ogg'))
             for (let i=0; i<clips.length; i++) {
@@ -545,7 +539,6 @@ function load_snds() {
 }
 
 function start_game(isRestart) {
-    _paq.push(['trackEvent', 'Game', (isRestart ? 'Restart' : 'Start'), N]);
     if (isRestart)
         window.history.replaceState({'page':'game'}, '', '');
     else
